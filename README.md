@@ -32,7 +32,7 @@ Một ứng dụng web đơn giản nhưng hiện đại giúp theo dõi thời 
 
 1.  Clone project này về máy:
     ```bash
-    git clone [https://github.com/username-cua-ban/weather-pro-max.git](https://github.com/username-cua-ban/weather-pro-max.git)
+    git clone [https://github.com/KryonBinary/weather.git](https://github.com/KryonBinary/weather.git)
     ```
 2.  Mở file `index.html` bằng trình duyệt bất kỳ.
 3.  Tận hưởng!
