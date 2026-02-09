@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thời Tiết Pro Max</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="background-animate"></div>
+
+    <div class="card">
+        <div class="date-time-section">
+            <h2 id="clock">00:00</h2>
+            <p id="date">Đang tải...</p>
+        </div>
+
+        <div class="current-weather">
+            <div class="main-info">
+                <img id="icon" src="" alt="icon">
+                <div>
+                    <h1 id="temp">--°</h1>
+                    <p id="desc">--</p>
+                </div>
+            </div>
+            
+            <div class="details">
+                <div class="detail-item">
+                    <i class="fa-solid fa-droplet"></i>
+                    <span id="humidity">--%</span>
+                    <small>Độ ẩm</small>
+                </div>
+                <div class="detail-item">
+                    <i class="fa-solid fa-wind"></i>
+                    <span id="wind">-- m/s</span>
+                    <small>Gió</small>
+                </div>
+            </div>
+            <div id="city-name"><i class="fa-solid fa-location-dot"></i> --</div>
+        </div>
+
+        <hr>
+
+        <div class="forecast-title">Dự báo 3 ngày tới</div>
+        <div class="forecast-container" id="forecast-list">
+            <p style="font-size: 0.8rem; opacity: 0.7">Đang tải dự báo...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
