@@ -25,14 +25,13 @@ Một ứng dụng web đơn giản nhưng hiện đại giúp theo dõi thời 
 
 ## 📸 Demo
 
-*(Bạn hãy chụp màn hình web của bạn, lưu ảnh tên là demo.png rồi để vào thư mục code, nó sẽ hiện ở đây)*
 ![Demo Screenshot](demo.png)
 
 ## 🚀 Cách cài đặt
 
 1.  Clone project này về máy:
     ```bash
-    git clone [https://github.com/KryonBinary/weather.git](https://github.com/KryonBinary/weather.git)
+    git clone https://github.com/KryonBinary/weather.git
     ```
 2.  Mở file `index.html` bằng trình duyệt bất kỳ.
 3.  Tận hưởng!
@@ -42,4 +41,4 @@ Một ứng dụng web đơn giản nhưng hiện đại giúp theo dõi thời 
 Project sử dụng API Key miễn phí từ OpenWeatherMap. Nếu bạn clone về, hãy vào file `script.js` và thay thế bằng API Key của riêng bạn để đảm bảo ổn định.
 
 ---
-Made by Kryon with Gemini
+Made by KryonBinary with Gemini
