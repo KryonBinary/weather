@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thời Tiết Pro Max</title>
+    <title>Weather Pro Max</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="background-animate"></div>
+    <div class="background-overlay"></div>
 
-    <div class="card">
+    <div class="card" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
+        
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Nhập tên thành phố...">
+            <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
         <div class="date-time-section">
             <h2 id="clock">00:00</h2>
             <p id="date">Đang tải...</p>
@@ -38,6 +44,11 @@
                     <span id="wind">-- m/s</span>
                     <small>Gió</small>
                 </div>
+                <div class="detail-item">
+                    <i class="fa-solid fa-eye"></i>
+                    <span id="visibility">-- km</span>
+                    <small>Tầm nhìn</small>
+                </div>
             </div>
             <div id="city-name"><i class="fa-solid fa-location-dot"></i> --</div>
         </div>
@@ -45,11 +56,10 @@
         <hr>
 
         <div class="forecast-title">Dự báo 3 ngày tới</div>
-        <div class="forecast-container" id="forecast-list">
-            <p style="font-size: 0.8rem; opacity: 0.7">Đang tải dự báo...</p>
-        </div>
+        <div class="forecast-container" id="forecast-list"></div>
     </div>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -25,7 +25,7 @@ Một ứng dụng web đơn giản nhưng hiện đại giúp theo dõi thời 
 
 ## 📸 Demo
 
-![Demo Screenshot](demo.png)
+![Demo Screenshot](8b2d4f85-4474-4ef9-8dd4-00dd7f6e0640.png)
 
 ## 🚀 Cách cài đặt
 

@@ -1,8 +1,4 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Quicksand', sans-serif;
@@ -12,137 +8,84 @@ body {
     align-items: center;
     overflow: hidden;
     color: white;
+    /* Hình nền mặc định */
+    background: url('https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=1974&auto=format&fit=crop') no-repeat center center/cover;
+    transition: background-image 0.5s ease-in-out; /* Hiệu ứng chuyển ảnh mượt */
 }
 
-/* Hiệu ứng nền động chuyển màu */
-.background-animate {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    z-index: -1;
+/* Lớp phủ đen mờ để chữ dễ đọc hơn */
+.background-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3); z-index: -1;
 }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Thẻ kính (Glassmorphism) */
 .card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border-radius: 25px;
     padding: 30px;
-    width: 350px;
+    width: 380px; /* Rộng hơn chút */
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
 }
 
-/* Ngày giờ */
-.date-time-section h2 {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: -5px;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-}
-.date-time-section p {
-    font-size: 1rem;
-    font-weight: 500;
-    margin-bottom: 20px;
-    opacity: 0.9;
-}
-
-/* Thời tiết hiện tại */
-.current-weather .main-info {
+/* THANH TÌM KIẾM */
+.search-box {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 15px;
+    margin-bottom: 20px;
 }
 
-.current-weather img {
-    width: 90px;
-    filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
+.search-box input {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    outline: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    color: white;
+    font-family: inherit;
+    width: 70%;
+    margin-right: 10px;
 }
+.search-box input::placeholder { color: #ddd; }
 
-#temp {
-    font-size: 3.5rem;
-    font-weight: 700;
-    line-height: 1;
-}
-
-#desc {
-    font-size: 1.1rem;
-    text-transform: capitalize;
-    margin-top: 5px;
-}
-
-/* Chi tiết (Độ ẩm, Gió) */
-.details {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-    background: rgba(0,0,0,0.1);
-    padding: 10px;
-    border-radius: 15px;
-}
-
-.detail-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.detail-item i { font-size: 1.2rem; margin-bottom: 5px; }
-.detail-item span { font-weight: bold; }
-.detail-item small { font-size: 0.8rem; opacity: 0.8; }
-
-#city-name {
-    margin-top: 15px;
-    font-weight: 500;
-    font-size: 1.1rem;
-}
-
-hr {
-    border: 0;
-    height: 1px;
+.search-box button {
     background: rgba(255,255,255,0.3);
-    margin: 20px 0;
+    border: none;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
 }
+.search-box button:hover { background: white; color: #333; }
 
-/* Phần Dự báo */
-.forecast-title {
-    text-align: left;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* Các phần còn lại giữ nguyên hoặc tinh chỉnh nhẹ */
+.date-time-section h2 { font-size: 3rem; font-weight: 700; margin-bottom: -5px; }
+.date-time-section p { font-size: 1rem; margin-bottom: 15px; opacity: 0.9; }
+
+.current-weather .main-info { display: flex; justify-content: center; align-items: center; gap: 10px; }
+.current-weather img { width: 80px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+#temp { font-size: 3.5rem; font-weight: 700; }
+#desc { text-transform: capitalize; }
+
+.details {
+    display: flex; justify-content: space-between;
+    margin-top: 20px; background: rgba(0,0,0,0.2);
+    padding: 15px; border-radius: 15px;
 }
+.detail-item { display: flex; flex-direction: column; align-items: center; font-size: 0.9rem; }
+.detail-item i { margin-bottom: 5px; font-size: 1.1rem; }
 
-.forecast-container {
-    display: flex;
-    justify-content: space-between;
-}
+#city-name { margin-top: 15px; font-weight: 600; font-size: 1.2rem; background: rgba(255,255,255,0.15); padding: 5px 15px; border-radius: 20px; display: inline-block;}
 
-.forecast-item {
-    background: rgba(255,255,255,0.1);
-    padding: 10px 5px;
-    border-radius: 12px;
-    width: 30%;
-    text-align: center;
-    transition: transform 0.2s;
-}
+hr { border: 0; height: 1px; background: rgba(255,255,255,0.3); margin: 20px 0; }
 
-.forecast-item:hover {
-    transform: translateY(-5px);
-    background: rgba(255,255,255,0.25);
-}
-
-.forecast-day { font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; }
-.forecast-icon { width: 40px; height: 40px; }
-.forecast-temp { font-size: 1rem; font-weight: bold; }
+.forecast-title { text-align: left; font-size: 0.9rem; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; }
+.forecast-container { display: flex; justify-content: space-between; }
+.forecast-item { background: rgba(255,255,255,0.15); padding: 10px 5px; border-radius: 12px; width: 30%; text-align: center; }
+.forecast-day { font-size: 0.8rem; font-weight: bold; }
+.forecast-icon { width: 35px; }
+.forecast-temp { font-size: 0.9rem; font-weight: bold; }
