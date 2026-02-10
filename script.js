@@ -1,4 +1,4 @@
-const apiKey = '12a9b591053ab6975bef5f64f74b61c2'; 
+const apiKey = '5f7b6f0bba4fa1bb1074c861edfb750e'; 
 
 // 1. Đồng hồ
 function updateClock() {
