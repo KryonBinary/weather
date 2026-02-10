@@ -1,5 +1,4 @@
-const apiKey = '12a9b591053ab6975bef5f64f74b61c2'; // API Key của bạn
-let city = 'Hanoi'; // Giá trị mặc định nếu không tìm thấy IP
+const apiKey = '12a9b591053ab6975bef5f64f74b61c2'; 
 
 // 1. Đồng hồ
 function updateClock() {
@@ -10,15 +9,15 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// 2. Xử lý tìm kiếm
+// 2. Xử lý tìm kiếm (Tìm theo TÊN)
 const searchInput = document.getElementById('search-input');
 const searchBtn = document.getElementById('search-btn');
 
 searchBtn.addEventListener('click', () => {
-    if (searchInput.value.trim() !== "") {
-        city = searchInput.value;
-        getCurrentWeather();
-        getForecast();
+    const city = searchInput.value.trim();
+    if (city !== "") {
+        // Tìm theo tên thành phố (q=...)
+        loadWeather(`q=${city}`);
         searchInput.value = "";
     }
 });
@@ -58,11 +57,14 @@ function updateBackground(weatherMain) {
     document.body.style.backgroundImage = `url('${bgUrl}')`;
 }
 
-// 4. Lấy thời tiết hiện tại
-async function getCurrentWeather() {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=vi`;
+// 4. HÀM GỌI API CHUNG (Chấp nhận cả Tên hoặc Tọa độ)
+async function loadWeather(queryParam) {
+    // queryParam sẽ là "q=Hanoi" hoặc "lat=20&lon=105"
+    
+    // A. Lấy thời tiết hiện tại
     try {
-        const res = await fetch(url);
+        const urlCurrent = `https://api.openweathermap.org/data/2.5/weather?${queryParam}&appid=${apiKey}&units=metric&lang=vi`;
+        const res = await fetch(urlCurrent);
         const data = await res.json();
         
         if (data.cod === 200) {
@@ -76,25 +78,16 @@ async function getCurrentWeather() {
             
             updateBackground(data.weather[0].main);
         } else {
-            // Nếu không tìm thấy (do IP định vị sai tên), quay về mặc định
-            if (city !== 'Hanoi') {
-                alert("Không tìm thấy địa điểm từ IP, chuyển về Hà Nội.");
-                city = 'Hanoi';
-                getCurrentWeather();
-                getForecast();
-            }
+            alert("Không tìm thấy địa điểm này!");
         }
-    } catch (error) {
-        console.error("Lỗi:", error);
-    }
-}
+    } catch (error) { console.error("Lỗi Current:", error); }
 
-// 5. Lấy dự báo
-async function getForecast() {
-    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric&lang=vi`;
+    // B. Lấy dự báo
     try {
-        const res = await fetch(url);
+        const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?${queryParam}&appid=${apiKey}&units=metric&lang=vi`;
+        const res = await fetch(urlForecast);
         const data = await res.json();
+        
         if (data.cod === "200") {
             const forecastList = document.getElementById('forecast-list');
             forecastList.innerHTML = "";
@@ -115,31 +108,32 @@ async function getForecast() {
                 forecastList.innerHTML += html;
             }
         }
-    } catch (error) { console.error(error); }
+    } catch (error) { console.error("Lỗi Forecast:", error); }
 }
 
-// 6. HÀM MỚI: Tự động định vị qua IP
+// 5. Tự động định vị (Dùng TỌA ĐỘ Lat/Lon -> Chuẩn 100%)
 async function autoLocate() {
     try {
-        // Gọi API check IP miễn phí
         const ipRes = await fetch('https://ipwho.is/');
         const ipData = await ipRes.json();
 
         if (ipData.success) {
-            // Nếu tìm thấy, gán thành phố từ IP vào biến city
-            city = ipData.city;
-            console.log("Đã phát hiện vị trí:", city);
+            // Lấy chính xác tọa độ
+            const lat = ipData.latitude;
+            const lon = ipData.longitude;
+            console.log(`Vị trí IP: ${ipData.city} (${lat}, ${lon})`);
+            
+            // Gọi API thời tiết bằng tọa độ (Không sợ sai tên nữa)
+            loadWeather(`lat=${lat}&lon=${lon}`);
         } else {
-            console.log("Không check được IP, dùng mặc định Hà Nội");
+            console.log("Không check được IP, về mặc định Hà Nội");
+            loadWeather('q=Hanoi');
         }
     } catch (error) {
         console.error("Lỗi check IP:", error);
+        loadWeather('q=Hanoi'); // Lỗi mạng thì về Hà Nội
     }
-
-    // Sau khi có vị trí (hoặc mặc định), mới tải thời tiết
-    getCurrentWeather();
-    getForecast();
 }
 
-// Thay vì gọi trực tiếp, ta gọi hàm autoLocate khi mở web
+// Chạy check vị trí ngay khi mở web
 autoLocate();
