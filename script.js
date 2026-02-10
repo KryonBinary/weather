@@ -1,5 +1,5 @@
-const apiKey = '12a9b591053ab6975bef5f64f74b61c2';
-let city = 'Hanoi'; // Mặc định ban đầu
+const apiKey = '12a9b591053ab6975bef5f64f74b61c2'; // API Key của bạn
+let city = 'Hanoi'; // Giá trị mặc định nếu không tìm thấy IP
 
 // 1. Đồng hồ
 function updateClock() {
@@ -19,46 +19,42 @@ searchBtn.addEventListener('click', () => {
         city = searchInput.value;
         getCurrentWeather();
         getForecast();
-        searchInput.value = ""; // Xóa ô nhập sau khi tìm
+        searchInput.value = "";
     }
 });
 
-// Cho phép nhấn Enter để tìm
 searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') searchBtn.click();
 });
 
-// 3. Hàm đổi hình nền theo thời tiết
+// 3. Hàm đổi hình nền
 function updateBackground(weatherMain) {
     let bgUrl = '';
-    
-    // Dựa vào từ khóa thời tiết (Clouds, Rain, Clear, Snow...) để chọn ảnh
     switch (weatherMain) {
-        case 'Clear': // Trời quang/Nắng
+        case 'Clear': 
             bgUrl = 'https://images.unsplash.com/photo-1601297183305-6df142704ea2?q=80&w=1974&auto=format&fit=crop';
             break;
-        case 'Clouds': // Nhiều mây
+        case 'Clouds': 
             bgUrl = 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?q=80&w=1951&auto=format&fit=crop';
             break;
-        case 'Rain': // Mưa
+        case 'Rain': 
         case 'Drizzle':
             bgUrl = 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=1974&auto=format&fit=crop';
             break;
-        case 'Thunderstorm': // Bão
+        case 'Thunderstorm': 
             bgUrl = 'https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?q=80&w=2071&auto=format&fit=crop';
             break;
-        case 'Snow': // Tuyết
+        case 'Snow': 
             bgUrl = 'https://images.unsplash.com/photo-1477601263568-180e2c6d046e?q=80&w=2070&auto=format&fit=crop';
             break;
-        case 'Mist': // Sương mù
+        case 'Mist': 
         case 'Haze':
         case 'Fog':
             bgUrl = 'https://images.unsplash.com/photo-1485236715568-ddc5ee6ca227?q=80&w=1974&auto=format&fit=crop';
             break;
-        default: // Mặc định
+        default: 
             bgUrl = 'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=1974&auto=format&fit=crop';
     }
-    
     document.body.style.backgroundImage = `url('${bgUrl}')`;
 }
 
@@ -74,21 +70,26 @@ async function getCurrentWeather() {
             document.getElementById('desc').innerText = data.weather[0].description;
             document.getElementById('humidity').innerText = data.main.humidity + "%";
             document.getElementById('wind').innerText = data.wind.speed + " m/s";
-            document.getElementById('visibility').innerText = (data.visibility / 1000) + " km"; // Thêm tầm nhìn
+            document.getElementById('visibility').innerText = (data.visibility / 1000) + " km";
             document.getElementById('city-name').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${data.name}, ${data.sys.country}`;
             document.getElementById('icon').src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
             
-            // Gọi hàm đổi hình nền
             updateBackground(data.weather[0].main);
         } else {
-            alert("Không tìm thấy thành phố này!");
+            // Nếu không tìm thấy (do IP định vị sai tên), quay về mặc định
+            if (city !== 'Hanoi') {
+                alert("Không tìm thấy địa điểm từ IP, chuyển về Hà Nội.");
+                city = 'Hanoi';
+                getCurrentWeather();
+                getForecast();
+            }
         }
     } catch (error) {
         console.error("Lỗi:", error);
     }
 }
 
-// 5. Lấy dự báo (Giữ nguyên logic cũ)
+// 5. Lấy dự báo
 async function getForecast() {
     const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric&lang=vi`;
     try {
@@ -117,5 +118,28 @@ async function getForecast() {
     } catch (error) { console.error(error); }
 }
 
-getCurrentWeather();
-getForecast();
+// 6. HÀM MỚI: Tự động định vị qua IP
+async function autoLocate() {
+    try {
+        // Gọi API check IP miễn phí
+        const ipRes = await fetch('https://ipwho.is/');
+        const ipData = await ipRes.json();
+
+        if (ipData.success) {
+            // Nếu tìm thấy, gán thành phố từ IP vào biến city
+            city = ipData.city;
+            console.log("Đã phát hiện vị trí:", city);
+        } else {
+            console.log("Không check được IP, dùng mặc định Hà Nội");
+        }
+    } catch (error) {
+        console.error("Lỗi check IP:", error);
+    }
+
+    // Sau khi có vị trí (hoặc mặc định), mới tải thời tiết
+    getCurrentWeather();
+    getForecast();
+}
+
+// Thay vì gọi trực tiếp, ta gọi hàm autoLocate khi mở web
+autoLocate();
