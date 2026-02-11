@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Weather Dashboard</title>
+    <title>Weather App</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://openweathermap.org/img/wn/02d.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="background-overlay"></div>
 
     <div class="dashboard-container" data-tilt>
-        
         <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Nhập thành phố (VD: Dalat)...">
-            <button id="search-btn"><i class="fa-solid fa-search"></i></button>
+            <input type="text" id="search-input" placeholder="Nhập tên thành phố...">
+            <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
             <button id="locate-btn" title="Vị trí của tôi"><i class="fa-solid fa-location-crosshairs"></i></button>
         </div>
 
@@ -50,7 +53,7 @@
                 <i class="fa-solid fa-wind"></i>
                 <span>Gió</span>
                 <h4 id="wind-speed">-- m/s</h4>
-                <div id="wind-dir-icon" style="font-size: 0.8rem; margin-top:5px"><i class="fa-solid fa-location-arrow"></i> <span id="wind-dir-text">--</span></div>
+                <div id="wind-dir" style="font-size: 0.8rem; margin-top:5px">--</div>
             </div>
             <div class="card-detail">
                 <i class="fa-solid fa-gauge-high"></i>
@@ -64,9 +67,9 @@
             </div>
             <div class="card-detail">
                 <i class="fa-regular fa-sun"></i>
-                <div style="font-size: 0.8rem;">
-                    <div><i class="fa-solid fa-arrow-up"></i> <span id="sunrise">--:--</span></div>
-                    <div><i class="fa-solid fa-arrow-down"></i> <span id="sunset">--:--</span></div>
+                <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 2px;">
+                    <span><i class="fa-solid fa-arrow-up"></i> <span id="sunrise">--:--</span></span>
+                    <span><i class="fa-solid fa-arrow-down"></i> <span id="sunset">--:--</span></span>
                 </div>
             </div>
         </div>
@@ -76,7 +79,7 @@
         </div>
 
         <div class="forecast-section">
-            <h3>Dự báo 3 ngày tới</h3>
+            <h3 style="font-size: 0.9rem; margin-bottom: 10px; opacity: 0.8;">DỰ BÁO 3 NGÀY TỚI</h3>
             <div class="forecast-container" id="forecast-list"></div>
         </div>
     </div>
