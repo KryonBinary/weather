@@ -3,63 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Pro Max</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Ultimate Weather Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="background-overlay"></div>
 
-    <div class="card" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
+    <div class="dashboard-container" data-tilt>
         
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Nhập tên thành phố...">
-            <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Nhập thành phố (VD: Dalat)...">
+            <button id="search-btn"><i class="fa-solid fa-search"></i></button>
+            <button id="locate-btn" title="Vị trí của tôi"><i class="fa-solid fa-location-crosshairs"></i></button>
         </div>
 
-        <div class="date-time-section">
-            <h2 id="clock">00:00</h2>
-            <p id="date">Đang tải...</p>
-        </div>
-
-        <div class="current-weather">
-            <div class="main-info">
-                <img id="icon" src="" alt="icon">
+        <div class="main-info">
+            <div class="location-date">
+                <h2 id="city-name"><i class="fa-solid fa-location-dot"></i> --</h2>
+                <p id="date">Đang tải...</p>
+            </div>
+            <div class="temp-container">
+                <img id="weather-icon" src="" alt="icon">
                 <div>
                     <h1 id="temp">--°</h1>
                     <p id="desc">--</p>
                 </div>
             </div>
-            
-            <div class="details">
-                <div class="detail-item">
-                    <i class="fa-solid fa-droplet"></i>
-                    <span id="humidity">--%</span>
-                    <small>Độ ẩm</small>
-                </div>
-                <div class="detail-item">
-                    <i class="fa-solid fa-wind"></i>
-                    <span id="wind">-- m/s</span>
-                    <small>Gió</small>
-                </div>
-                <div class="detail-item">
-                    <i class="fa-solid fa-eye"></i>
-                    <span id="visibility">-- km</span>
-                    <small>Tầm nhìn</small>
-                </div>
-            </div>
-            <div id="city-name"><i class="fa-solid fa-location-dot"></i> --</div>
         </div>
 
-        <hr>
+        <div class="details-grid">
+            <div class="card-detail">
+                <i class="fa-solid fa-temperature-half"></i>
+                <span>Cảm giác</span>
+                <h4 id="feels-like">--°</h4>
+            </div>
+            <div class="card-detail">
+                <i class="fa-solid fa-droplet"></i>
+                <span>Độ ẩm</span>
+                <h4 id="humidity">--%</h4>
+            </div>
+            <div class="card-detail">
+                <i class="fa-solid fa-wind"></i>
+                <span>Gió</span>
+                <h4 id="wind-speed">-- m/s</h4>
+                <div id="wind-dir-icon" style="font-size: 0.8rem; margin-top:5px"><i class="fa-solid fa-location-arrow"></i> <span id="wind-dir-text">--</span></div>
+            </div>
+            <div class="card-detail">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Áp suất</span>
+                <h4 id="pressure">-- hPa</h4>
+            </div>
+            <div class="card-detail">
+                <i class="fa-solid fa-eye"></i>
+                <span>Tầm nhìn</span>
+                <h4 id="visibility">-- km</h4>
+            </div>
+            <div class="card-detail">
+                <i class="fa-regular fa-sun"></i>
+                <div style="font-size: 0.8rem;">
+                    <div><i class="fa-solid fa-arrow-up"></i> <span id="sunrise">--:--</span></div>
+                    <div><i class="fa-solid fa-arrow-down"></i> <span id="sunset">--:--</span></div>
+                </div>
+            </div>
+        </div>
 
-        <div class="forecast-title">Dự báo 3 ngày tới</div>
-        <div class="forecast-container" id="forecast-list"></div>
+        <div class="chart-wrapper">
+            <canvas id="tempChart"></canvas>
+        </div>
+
+        <div class="forecast-section">
+            <h3>Dự báo 3 ngày tới</h3>
+            <div class="forecast-container" id="forecast-list"></div>
+        </div>
     </div>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
