@@ -1,91 +1,76 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Quicksand', sans-serif;
-    height: 100vh;
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    background: url('https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=1974') no-repeat center center/cover;
     color: white;
-    /* Hình nền mặc định */
-    background: url('https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=1974&auto=format&fit=crop') no-repeat center center/cover;
-    transition: background-image 0.5s ease-in-out; /* Hiệu ứng chuyển ảnh mượt */
+    padding: 20px;
+    transition: background-image 0.5s ease;
 }
 
-/* Lớp phủ đen mờ để chữ dễ đọc hơn */
 .background-overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.3); z-index: -1;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4); z-index: -1; backdrop-filter: blur(8px);
 }
 
-.card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+.dashboard-container {
+    background: rgba(30, 30, 30, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: 25px;
     padding: 30px;
-    width: 380px; /* Rộng hơn chút */
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
+    width: 100%; max-width: 480px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.15);
 }
 
-/* THANH TÌM KIẾM */
-.search-box {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+
+.search-bar { display: flex; gap: 10px; margin-bottom: 25px; }
+.search-bar input {
+    flex: 1; padding: 12px 20px; border-radius: 20px; border: none; outline: none;
+    background: rgba(255,255,255,0.15); color: white; font-family: inherit;
+}
+.search-bar input::placeholder { color: #ddd; }
+.search-bar button {
+    width: 45px; height: 45px; border-radius: 50%; border: none; cursor: pointer;
+    background: rgba(255,255,255,0.15); color: white; transition: 0.3s;
+}
+.search-bar button:hover { background: white; color: #333; }
+
+.main-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.location-date h2 { font-size: 1.4rem; margin-bottom: 5px; font-weight: 700; }
+.location-date p { font-size: 0.9rem; opacity: 0.9; }
+.temp-container { text-align: right; display: flex; align-items: center; gap: 5px; }
+.temp-container img { width: 70px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
+#temp { font-size: 3.2rem; font-weight: 700; line-height: 1; }
+#desc { text-transform: capitalize; font-size: 0.9rem; margin-top: 5px; }
+
+
+.details-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px;
+}
+.card-detail {
+    background: rgba(255,255,255,0.1); padding: 12px 5px; border-radius: 15px;
+    text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.card-detail i { font-size: 1.1rem; margin-bottom: 5px; color: #74b9ff; }
+.card-detail span { font-size: 0.65rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
+.card-detail h4 { font-size: 0.95rem; margin-top: 4px; font-weight: 600; }
+
+
+.chart-wrapper {
+    background: rgba(0,0,0,0.2); border-radius: 20px; padding: 15px 10px;
+    height: 180px; margin-bottom: 25px;
 }
 
-.search-box input {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    outline: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    color: white;
-    font-family: inherit;
-    width: 70%;
-    margin-right: 10px;
+
+.forecast-container { display: flex; justify-content: space-between; gap: 10px; }
+.forecast-item {
+    background: rgba(255,255,255,0.1); flex: 1; padding: 10px; border-radius: 15px; text-align: center;
 }
-.search-box input::placeholder { color: #ddd; }
-
-.search-box button {
-    background: rgba(255,255,255,0.3);
-    border: none;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.search-box button:hover { background: white; color: #333; }
-
-/* Các phần còn lại giữ nguyên hoặc tinh chỉnh nhẹ */
-.date-time-section h2 { font-size: 3rem; font-weight: 700; margin-bottom: -5px; }
-.date-time-section p { font-size: 1rem; margin-bottom: 15px; opacity: 0.9; }
-
-.current-weather .main-info { display: flex; justify-content: center; align-items: center; gap: 10px; }
-.current-weather img { width: 80px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
-#temp { font-size: 3.5rem; font-weight: 700; }
-#desc { text-transform: capitalize; }
-
-.details {
-    display: flex; justify-content: space-between;
-    margin-top: 20px; background: rgba(0,0,0,0.2);
-    padding: 15px; border-radius: 15px;
-}
-.detail-item { display: flex; flex-direction: column; align-items: center; font-size: 0.9rem; }
-.detail-item i { margin-bottom: 5px; font-size: 1.1rem; }
-
-#city-name { margin-top: 15px; font-weight: 600; font-size: 1.2rem; background: rgba(255,255,255,0.15); padding: 5px 15px; border-radius: 20px; display: inline-block;}
-
-hr { border: 0; height: 1px; background: rgba(255,255,255,0.3); margin: 20px 0; }
-
-.forecast-title { text-align: left; font-size: 0.9rem; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; }
-.forecast-container { display: flex; justify-content: space-between; }
-.forecast-item { background: rgba(255,255,255,0.15); padding: 10px 5px; border-radius: 12px; width: 30%; text-align: center; }
-.forecast-day { font-size: 0.8rem; font-weight: bold; }
-.forecast-icon { width: 35px; }
-.forecast-temp { font-size: 0.9rem; font-weight: bold; }
+.forecast-item:hover { background: rgba(255,255,255,0.2); transform: translateY(-3px); transition: 0.3s; }
+.forecast-icon { width: 40px; }

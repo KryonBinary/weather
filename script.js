@@ -1,139 +1,164 @@
 const apiKey = '5f7b6f0bba4fa1bb1074c861edfb750e'; 
+let myChart = null;
 
-// 1. Đồng hồ
+document.addEventListener('DOMContentLoaded', () => {
+    updateClock();
+    autoLocate();
+});
+setInterval(updateClock, 1000);
+
+
+const searchInput = document.getElementById('search-input');
+document.getElementById('search-btn').addEventListener('click', () => handleSearch());
+document.getElementById('locate-btn').addEventListener('click', () => autoLocate());
+searchInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleSearch(); });
+
 function updateClock() {
     const now = new Date();
-    document.getElementById('clock').innerText = now.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
     document.getElementById('date').innerText = now.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' });
 }
-setInterval(updateClock, 1000);
-updateClock();
 
-// 2. Xử lý tìm kiếm (Tìm theo TÊN)
-const searchInput = document.getElementById('search-input');
-const searchBtn = document.getElementById('search-btn');
 
-searchBtn.addEventListener('click', () => {
+function handleSearch() {
     const city = searchInput.value.trim();
-    if (city !== "") {
-        // Tìm theo tên thành phố (q=...)
-        loadWeather(`q=${city}`);
-        searchInput.value = "";
+    if(city) {
+        fetchWeatherData(`q=${city}`);
+        searchInput.value = '';
     }
-});
-
-searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') searchBtn.click();
-});
-
-// 3. Hàm đổi hình nền
-function updateBackground(weatherMain) {
-    let bgUrl = '';
-    switch (weatherMain) {
-        case 'Clear': 
-            bgUrl = 'https://images.unsplash.com/photo-1601297183305-6df142704ea2?q=80&w=1974&auto=format&fit=crop';
-            break;
-        case 'Clouds': 
-            bgUrl = 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?q=80&w=1951&auto=format&fit=crop';
-            break;
-        case 'Rain': 
-        case 'Drizzle':
-            bgUrl = 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=1974&auto=format&fit=crop';
-            break;
-        case 'Thunderstorm': 
-            bgUrl = 'https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?q=80&w=2071&auto=format&fit=crop';
-            break;
-        case 'Snow': 
-            bgUrl = 'https://images.unsplash.com/photo-1477601263568-180e2c6d046e?q=80&w=2070&auto=format&fit=crop';
-            break;
-        case 'Mist': 
-        case 'Haze':
-        case 'Fog':
-            bgUrl = 'https://images.unsplash.com/photo-1485236715568-ddc5ee6ca227?q=80&w=1974&auto=format&fit=crop';
-            break;
-        default: 
-            bgUrl = 'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=1974&auto=format&fit=crop';
-    }
-    document.body.style.backgroundImage = `url('${bgUrl}')`;
 }
 
-// 4. HÀM GỌI API CHUNG (Chấp nhận cả Tên hoặc Tọa độ)
-async function loadWeather(queryParam) {
-    // queryParam sẽ là "q=Hanoi" hoặc "lat=20&lon=105"
-    
-    // A. Lấy thời tiết hiện tại
-    try {
-        const urlCurrent = `https://api.openweathermap.org/data/2.5/weather?${queryParam}&appid=${apiKey}&units=metric&lang=vi`;
-        const res = await fetch(urlCurrent);
-        const data = await res.json();
-        
-        if (data.cod === 200) {
-            document.getElementById('temp').innerText = Math.round(data.main.temp) + "°";
-            document.getElementById('desc').innerText = data.weather[0].description;
-            document.getElementById('humidity').innerText = data.main.humidity + "%";
-            document.getElementById('wind').innerText = data.wind.speed + " m/s";
-            document.getElementById('visibility').innerText = (data.visibility / 1000) + " km";
-            document.getElementById('city-name').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${data.name}, ${data.sys.country}`;
-            document.getElementById('icon').src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-            
-            updateBackground(data.weather[0].main);
-        } else {
-            alert("Không tìm thấy địa điểm này!");
-        }
-    } catch (error) { console.error("Lỗi Current:", error); }
 
-    // B. Lấy dự báo
-    try {
-        const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?${queryParam}&appid=${apiKey}&units=metric&lang=vi`;
-        const res = await fetch(urlForecast);
-        const data = await res.json();
-        
-        if (data.cod === "200") {
-            const forecastList = document.getElementById('forecast-list');
-            forecastList.innerHTML = "";
-            const dailyData = data.list.filter(item => item.dt_txt.includes("12:00:00"));
-            for (let i = 0; i < 3; i++) {
-                const dayData = dailyData[i];
-                if (!dayData) break;
-                const date = new Date(dayData.dt * 1000);
-                const dayName = date.toLocaleDateString('vi-VN', { weekday: 'short' });
-                const icon = `http://openweathermap.org/img/wn/${dayData.weather[0].icon}.png`;
-                const temp = Math.round(dayData.main.temp) + "°";
-                const html = `
-                    <div class="forecast-item">
-                        <div class="forecast-day">${dayName}</div>
-                        <img class="forecast-icon" src="${icon}" alt="icon">
-                        <div class="forecast-temp">${temp}</div>
-                    </div>`;
-                forecastList.innerHTML += html;
-            }
-        }
-    } catch (error) { console.error("Lỗi Forecast:", error); }
-}
-
-// 5. Tự động định vị (Dùng TỌA ĐỘ Lat/Lon -> Chuẩn 100%)
 async function autoLocate() {
     try {
-        const ipRes = await fetch('https://ipwho.is/');
-        const ipData = await ipRes.json();
-
-        if (ipData.success) {
-            // Lấy chính xác tọa độ
-            const lat = ipData.latitude;
-            const lon = ipData.longitude;
-            console.log(`Vị trí IP: ${ipData.city} (${lat}, ${lon})`);
-            
-            // Gọi API thời tiết bằng tọa độ (Không sợ sai tên nữa)
-            loadWeather(`lat=${lat}&lon=${lon}`);
+        const res = await fetch('https://ipwho.is/');
+        const data = await res.json();
+        if(data.success) {
+            fetchWeatherData(`lat=${data.latitude}&lon=${data.longitude}`);
         } else {
-            console.log("Không check được IP, về mặc định Hà Nội");
-            loadWeather('q=Hanoi');
+            fetchWeatherData('q=Hanoi');
         }
-    } catch (error) {
-        console.error("Lỗi check IP:", error);
-        loadWeather('q=Hanoi'); // Lỗi mạng thì về Hà Nội
+    } catch {
+        fetchWeatherData('q=Hanoi');
     }
 }
 
-// Chạy check vị trí ngay khi mở web
-autoLocate();
+
+async function fetchWeatherData(query) {
+    try {
+
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?${query}&appid=${apiKey}&units=metric&lang=vi`);
+        const data = await res.json();
+        
+        if(data.cod === 200) {
+            updateUI(data); 
+            
+    
+            const resForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?${query}&appid=${apiKey}&units=metric&lang=vi`);
+            const dataForecast = await resForecast.json();
+            if(dataForecast.cod === "200") {
+                updateForecastUI(dataForecast.list);
+                drawChart(dataForecast.list);
+            }
+        } else {
+            alert('Không tìm thấy địa điểm này!');
+        }
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+function updateUI(data) {
+
+    document.getElementById('city-name').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${data.name}, ${data.sys.country}`;
+    const temp = Math.round(data.main.temp);
+    document.getElementById('temp').innerText = temp + "°";
+    document.getElementById('desc').innerText = data.weather[0].description;
+    
+    const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+    document.getElementById('weather-icon').src = iconUrl;
+
+
+    document.title = `${temp}°C - ${data.name} | Weather App`;
+    document.getElementById('favicon').href = iconUrl;
+
+    document.getElementById('feels-like').innerText = Math.round(data.main.feels_like) + "°";
+    document.getElementById('humidity').innerText = data.main.humidity + "%";
+    document.getElementById('wind-speed').innerText = data.wind.speed + " m/s";
+    document.getElementById('wind-dir').innerHTML = `<i class="fa-solid fa-location-arrow" style="transform: rotate(${data.wind.deg-45}deg)"></i> ${getCompassDirection(data.wind.deg)}`;
+    document.getElementById('pressure').innerText = data.main.pressure + " hPa";
+    document.getElementById('visibility').innerText = (data.visibility / 1000).toFixed(1) + " km";
+    document.getElementById('sunrise').innerText = formatUnixTime(data.sys.sunrise);
+    document.getElementById('sunset').innerText = formatUnixTime(data.sys.sunset);
+
+
+    updateBackground(data.weather[0].main);
+}
+
+function updateForecastUI(list) {
+    const forecastList = document.getElementById('forecast-list');
+    forecastList.innerHTML = "";
+    const dailyData = list.filter(item => item.dt_txt.includes("12:00:00")).slice(0, 3);
+    
+    dailyData.forEach(item => {
+        const date = new Date(item.dt * 1000);
+        const dayName = date.toLocaleDateString('vi-VN', { weekday: 'short' });
+        const html = `
+            <div class="forecast-item">
+                <div style="font-size:0.8rem; font-weight:bold">${dayName}</div>
+                <img class="forecast-icon" src="https://openweathermap.org/img/wn/${item.weather[0].icon}.png">
+                <div style="font-weight:bold">${Math.round(item.main.temp)}°</div>
+            </div>`;
+        forecastList.innerHTML += html;
+    });
+}
+
+
+function drawChart(list) {
+    const ctx = document.getElementById('tempChart').getContext('2d');
+    const next8Hours = list.slice(0, 8);
+    const labels = next8Hours.map(item => new Date(item.dt * 1000).getHours() + 'h');
+    const dataPoints = next8Hours.map(item => Math.round(item.main.temp));
+
+    if(myChart) myChart.destroy();
+    
+
+    Chart.register(ChartDataLabels);
+
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: dataPoints,
+                borderColor: 'white',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                tension: 0.4, fill: true, pointBackgroundColor: 'white', pointRadius: 4, borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            layout: { padding: { top: 20 } },
+            plugins: { 
+                legend: { display: false }, tooltip: { enabled: false },
+                datalabels: { color: 'white', anchor: 'end', align: 'top', offset: 5, font: { weight: 'bold' }, formatter: (v) => v + '°' }
+            },
+            scales: { x: { ticks: { color: '#eee' }, grid: { display: false } }, y: { display: false, min: Math.min(...dataPoints) - 5 } }
+        }
+    });
+}
+
+
+function formatUnixTime(unix) {
+    return new Date(unix * 1000).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+function getCompassDirection(deg) {
+    const directions = ['Bắc', 'Đông Bắc', 'Đông', 'Đông Nam', 'Nam', 'Tây Nam', 'Tây', 'Tây Bắc'];
+    return directions[Math.round(deg / 45) % 8];
+}
+function updateBackground(main) {
+    let url = 'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=1974';
+    if(main === 'Clear') url = 'https://images.unsplash.com/photo-1601297183305-6df142704ea2?q=80&w=1974';
+    if(main === 'Clouds') url = 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?q=80&w=1951';
+    if(main === 'Rain') url = 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=1974';
+    document.body.style.backgroundImage = `url('${url}')`;
+}
